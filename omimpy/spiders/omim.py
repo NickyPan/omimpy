@@ -28,7 +28,7 @@ class omimSpider(scrapy.Spider):
         main_div = response.xpath('//*[@id="content"]/div[contains(@class, "hidden-print")]/div[2]/div[3]')
         gene_pheno = {}
         gene_pheno['url'] = response.url
-        gene_pheno['omim_num'] = main_div.xpath('div[1]/div[1]/div[2]/span/span/text()').extract()[1].strip()
+        gene_pheno['omim_num'] = main_div.xpath('div[1]/div[1]/div[2]/span/span/span[contains(@class, "mim-highlighted")]/text()').extract_first().strip()
         gene_pheno['omim_type'] = main_div.xpath('div[1]/div[1]/div[2]/span/span/span/strong/text()').extract_first().strip()
 
         if gene_pheno['omim_type'] == "#":
@@ -40,23 +40,24 @@ class omimSpider(scrapy.Spider):
         # if 'Description' in main_div.text:
         #     gene_pheno['description'] = ','.join(response.xpath('//div[@id="descriptionFold"]/span/p/text()').extract().strip() )
 
-        # if main_div.xpath('.//table'):
-        #     gene_pheno['relations'] = []
-        #     tr = main_div.xpath('.//table/tbody/tr')
-        #     for tb_record in tr:
-        #             phenotype = {}
-        #             phenotype['location'] = tb_record.xpath('td')[0].xpath('span/a/text()').extract_first().strip()
-        #             phenotype['phenotype'] = tb_record.xpath('td')[1].xpath('span/text()').extract_first().strip()
-        #             phenotype['pheno_mim'] = tb_record.xpath('td')[2].xpath('span/a/text()').extract_first().strip()
-        #             phenotype['inherit'] = tb_record.xpath('td')[3].xpath('span/abbr/text()').extract_first().strip()
-        #             phenotype['mapping_key'] = tb_record.xpath('td')[4].xpath('span/abbr/text()').extract_first().strip()
-        #             if len(tb_record.xpath('td')) > 5:
-        #                 phenotype['gene_related'] = tb_record.xpath('td')[5].xpath('span/text()').extract_first().strip()
-        #             if len(tb_record.xpath('td')) > 6:
-        #                 phenotype['gene_mim'] = tb_record.xpath('td')[6].xpath('span/a/text()').extract_first().strip()
-        #             gene_pheno['relations'].append(phenotype)
+        if main_div.xpath('.//table[contains(@class, "small")]'):
+            gene_pheno['relations'] = []
+            tr = main_div.xpath('.//table[contains(@class, "small")]/tbody/tr')
+            print (len(tr))
+            # for tb_record in tr:
+            #         phenotype = {}
+            #         phenotype['location'] = tb_record.xpath('td')[0].xpath('span/a/text()').extract_first().strip()
+            #         phenotype['phenotype'] = tb_record.xpath('td')[1].xpath('span/text()').extract_first().strip()
+            #         phenotype['pheno_mim'] = tb_record.xpath('td')[2].xpath('span/a/span[contains(@class, "mim-highlighted")]/text()').extract_first().strip()
+            #         phenotype['inherit'] = tb_record.xpath('td')[3].xpath('span/abbr/text()').extract_first().strip()
+            #         phenotype['mapping_key'] = tb_record.xpath('td')[4].xpath('span/abbr/text()').extract_first().strip()
+            #         if len(tb_record.xpath('td')) > 5:
+            #             phenotype['gene_related'] = tb_record.xpath('td')[5].xpath('span/text()').extract_first().strip()
+            #         if len(tb_record.xpath('td')) > 6:
+            #             phenotype['gene_mim'] = tb_record.xpath('td')[6].xpath('span/a/text()').extract_first().strip()
+            #         gene_pheno['relations'].append(phenotype)
 
-        # print (main_div.xpath('.//div[contains(@class, "btn-group")]/a/text()').extract_first().strip())
+        print (main_div.xpath('.//div[contains(@class, "btn-group")]/a/text()').extract_first().strip())
 
         if main_div.xpath('.//div[contains(@class, "btn-group")]/a/text()').extract_first().strip() == 'Clinical Synopsis' :
             gene_pheno['clinical'] = {}
