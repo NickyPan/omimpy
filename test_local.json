@@ -1,0 +1,60 @@
+[{
+    "url": "http://127.0.0.1:8000/omim_1.html",
+    "omim_num": "",
+    "omim_type": "#",
+    "title": "MICROPHTHALMIA, SYNDROMIC 9",
+    "title_abbr": "MCOPS9",
+    "clinical": {
+        "Inheritance": ["Autosomal recessive"],
+        "Growth": [{
+            "Height": ["Short stature"]
+        }, {
+            "Other": ["Intrauterine growth retardation (IUGR)"]
+        }],
+        "HeadAndNeck": [{
+            "Face": ["Micrognathia (uncommon)"]
+        }, {
+            "Ears": ["Large, lowset ears (uncommon)"]
+        }, {
+            "Eyes": ["Anophthalmia, clinical", "Microphthalmia, bilateral (isolated feature in some patients)", "Blepharophimosis (uncommon)", "Broad, flared eyebrows", "Only upwardgrowing eyebrows (uncommon)", "Hypoplasia or absence of optic nerve", "Coloboma, isolated (in some patients)"]
+        }, {
+            "Nose": ["Broad nasal bridge (uncommon)"]
+        }],
+        "Cardiovascular": [{
+            "Heart": ["Ventricular septal defect", "Atrial septal defect", "Hypoplastic left atrium", "Single ventricle", "Dilation of atrium", "Dilation of ventricle", "Small ventricle", "Pulmonic valve stenosis (rare)"]
+        }, {
+            "Vascular": ["Patent ductus arteriosus", "Agenesis of pulmonary vessels", "Pulmonary artery atresia (rare)", "Alveolar capillary dysplasia (rare)", "Tetralogy of Fallot (rare)", "Coarctation of aorta (rare)", "Truncus arteriosus communis (rare)", "Right aortic arch (rare)"]
+        }],
+        "Respiratory": [{
+            "Lung": ["Pulmonary hypoplasia, usually bilateral", "Pulmonary agenesis, usually bilateral", "Respiratory insufficiency", "Alveolar capillary dysplasia", "Unilobular lung"]
+        }],
+        "Chest": [{
+            "Diaphragm": ["Diaphragmatic hernia", "Diaphragmatic eventration"]
+        }],
+        "Abdomen": [{
+            "Spleen": ["Hypoplastic spleen", "Multilobulated spleen"]
+        }],
+        "Genitourinary": [{
+            "External Genitalia (Male)": ["Inguinal hernia"]
+        }, {
+            "Internal Genitalia (Male)": ["Cryptorchidism"]
+        }, {
+            "Internal Genitalia (Female)": ["Hypoplastic, bicornuate uterus", "Streak ovaries"]
+        }, {
+            "Kidneys": ["Horseshoe kidney", "Hydronephrosis", "Pelvic kidney", "Hypoplastic kidney", "Malrotation of kidney", "Hypoplastic renal arteries (rare)"]
+        }],
+        "Skeletal": [{
+            "Hands": ["Digital contractures (in some patients)"]
+        }, {
+            "Feet": ["Clawlike toes (in some patients)"]
+        }],
+        "SkinNailsHair": [{
+            "Hair": ["Only upwardgrowing eyebrows (uncommon)"]
+        }],
+        "Neurologic": [{
+            "Central Nervous System": ["Mental retardation, profound", "Hypotonia"]
+        }],
+        "Miscellaneous": ["Early lethality in most cases"],
+        "MolecularBasis": ["Caused by mutation in the homolog of the mouse stimulated by retinoic acid6 gene (STRA6,", ")"]
+    }
+}]

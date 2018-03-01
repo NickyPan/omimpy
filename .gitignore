@@ -60,6 +60,7 @@ instance/
 
 # Scrapy stuff:
 .scrapy
+_*/
 
 # Sphinx documentation
 docs/_build/
