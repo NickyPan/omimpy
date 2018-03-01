@@ -63,6 +63,7 @@ instance/
 _*/
 *.json
 *.html
+test/
 
 # Sphinx documentation
 docs/_build/
