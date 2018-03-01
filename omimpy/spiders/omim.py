@@ -43,19 +43,19 @@ class omimSpider(scrapy.Spider):
         if main_div.xpath('.//table[contains(@class, "small")]'):
             gene_pheno['relations'] = []
             tr = main_div.xpath('.//table[contains(@class, "small")]/tbody/tr')
-            print (len(tr))
-            # for tb_record in tr:
-            #         phenotype = {}
-            #         phenotype['location'] = tb_record.xpath('td')[0].xpath('span/a/text()').extract_first().strip()
-            #         phenotype['phenotype'] = tb_record.xpath('td')[1].xpath('span/text()').extract_first().strip()
-            #         phenotype['pheno_mim'] = tb_record.xpath('td')[2].xpath('span/a/span[contains(@class, "mim-highlighted")]/text()').extract_first().strip()
-            #         phenotype['inherit'] = tb_record.xpath('td')[3].xpath('span/abbr/text()').extract_first().strip()
-            #         phenotype['mapping_key'] = tb_record.xpath('td')[4].xpath('span/abbr/text()').extract_first().strip()
-            #         if len(tb_record.xpath('td')) > 5:
-            #             phenotype['gene_related'] = tb_record.xpath('td')[5].xpath('span/text()').extract_first().strip()
-            #         if len(tb_record.xpath('td')) > 6:
-            #             phenotype['gene_mim'] = tb_record.xpath('td')[6].xpath('span/a/text()').extract_first().strip()
-            #         gene_pheno['relations'].append(phenotype)
+
+            for tb_record in tr:
+                    phenotype = {}
+                    phenotype['location'] = tb_record.xpath('td')[0].xpath('span/a/text()').extract_first().strip()
+                    phenotype['phenotype'] = tb_record.xpath('td')[1].xpath('span/text()').extract_first().strip()
+                    phenotype['pheno_mim'] = tb_record.xpath('td')[2].xpath('span/a/span[contains(@class, "mim-highlighted")]/text()').extract_first().strip()
+                    phenotype['inherit'] = tb_record.xpath('td')[3].xpath('span/abbr/text()').extract_first().strip()
+                    phenotype['mapping_key'] = tb_record.xpath('td')[4].xpath('span/abbr/text()').extract_first().strip()
+                    if len(tb_record.xpath('td')) > 5:
+                        phenotype['gene_related'] = tb_record.xpath('td')[5].xpath('span/text()').extract_first().strip()
+                    if len(tb_record.xpath('td')) > 6:
+                        phenotype['gene_mim'] = tb_record.xpath('td')[6].xpath('span/a/text()').extract_first().strip()
+                    gene_pheno['relations'].append(phenotype)
 
         print (main_div.xpath('.//div[contains(@class, "btn-group")]/a/text()').extract_first().strip())
 

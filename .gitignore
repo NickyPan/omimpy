@@ -62,6 +62,7 @@ instance/
 .scrapy
 _*/
 *.json
+*.html
 
 # Sphinx documentation
 docs/_build/
