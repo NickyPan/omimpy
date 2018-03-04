@@ -87,7 +87,7 @@ class Proxies(object):
             protocol = 'https' if 'https' in proxy else 'http'
             proxies = {protocol: proxy}
             try:
-                if requests.get('http://www.baidu.com', proxies=proxies, timeout=2).status_code == 200:
+                if requests.get('http://www.google.com', proxies=proxies, timeout=2).status_code == 200:
                     print ('success %s' % proxy)
                     new_queue.put(proxy)
             except:
