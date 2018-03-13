@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import codecs
+import sys
 from operator import itemgetter
 
 # entries = []
@@ -8,17 +9,17 @@ from operator import itemgetter
 #     for line in f:
 #         entries.append(line.split('\t')[0])
 
-load_entries = json.load(open('./omimpy/omim_details_sorted.json'))
-loaded = []
-for item in load_entries:
-    if item['omim_num'] not in loaded:
-        loaded.append(item['omim_num'])
+# load_entries = json.load(open('./omimpy/omim_details_sorted.json'))
+# loaded = []
+# for item in load_entries:
+#     if item['omim_num'] not in loaded:
+#         loaded.append(item['omim_num'])
 
-# loaded.sort()
-print (len(load_entries))
-print (loaded[-1])
-latest_entries = json.load(open('./omimpy/omim_latest_entries.json'))
-print (latest_entries[-1])
+# # loaded.sort()
+# print (len(load_entries))
+# print (loaded[-1])
+# latest_entries = json.load(open('./omimpy/omim_latest_entries.json'))
+# print (latest_entries[-1])
 
 # need_to_scrapy = []
 # for entry in latest_entries:
@@ -70,3 +71,39 @@ print (latest_entries[-1])
 # print (len(omim_latest))
 # with open('./omimpy/omim_details_latest.json', 'w') as outfile:
 #     json.dump(omim_latest, outfile)
+
+# # find key value
+# latest_entries = json.load(open('./omim_details_latest.json'))
+# key_str = sys.argv[1]
+# key_arr = []
+# key_arr.append("Location\tPhenotype\tPhenotype MIM number\tInheritance\tPhenotype mapping key\tGene/Locus\tGene/Locus MIM number")
+
+# def collect_val(dictionary):
+#     for relation in dictionary:
+#         relation_str = '\t'.join(str(x) for x in relation.values())
+#         if relation_str not in key_arr:
+#             key_arr.append(relation_str)
+
+# for item in latest_entries:
+#     for item_str in item.values():
+#         if key_str in item_str and 'relations' in item:
+#             collect_val(item['relations'])
+#             pass
+#         elif 'clinical' in item:
+#             for cli_item in item['clinical'].values():
+#                 for cli_val in cli_item:
+#                     if isinstance(cli_val, dict):
+#                         for cli_val in cli_val.values():
+#                             if key_str in cli_val and 'relations' in item:
+#                                 collect_val(item['relations'])
+#                                 pass
+#                     elif isinstance(cli_val, list):
+#                         if key_str in cli_val and 'relations' in item:
+#                             collect_val(item['relations'])
+#                             pass
+# print(len(key_arr))
+# key_out = '\n'.join([str(x) for x in key_arr])
+# with open('key_entries.txt', 'w') as f:
+#     print(key_out, file=f)
+
+# print ("搜索" + key_str + "完成")
