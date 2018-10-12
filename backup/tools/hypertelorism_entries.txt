@@ -1,0 +1,2 @@
+Location	Phenotype	Phenotype MIM number	Inheritance	Phenotype mapping key	Gene/Locus	Gene/Locus MIM number
+12q24.13	LEOPARD syndrome 1	151100	AD	3	PTPN11	176876

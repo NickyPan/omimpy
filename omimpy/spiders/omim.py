@@ -4,47 +4,71 @@
 import re
 import scrapy
 import json
+import datetime
+# from omimpy.items import OmimItem, updatedItem
+
+dataNow = datetime.datetime.now()
+curYear = dataNow.year
+curMonth = dataNow.month
 
 class omimSpider(scrapy.Spider):
     name = 'omim'
     # URL_BASE = 'http://127.0.0.1:8000/'
-    URL_BASE = 'https://www.omim.org/entry/'
-    pagename = ["omim_1", "omim_2"]
-    entries = json.load(open('need_to_scrapy.json'))
-    # with open('omim_cn.txt','r') as f:
-    #     for line in f:
-    #         entries.append(line.split('\t')[0])
-    # start_urls = ['http://www.omim.org/entry/601186']
-    # start_urls = ['http://127.0.0.1:8000/omim_2.html']
-    # start_urls = ['http://127.0.0.1:8000/omim_1.html']
+    MAIN_URL = 'https://www.omim.org/entry/'
+    UPDATE_URL = 'https://www.omim.org/statistics/updates/'
+    # entries = json.load(open('need_to_scrapy.json'))
+    f = open ('updated.log')
+    lastLine = f.readlines()[-1].strip()
+    f.close()
+    lastUpdatedYear = int(lastLine.split('\t')[1])
+    lastUpdatedMonth = int(lastLine.split('\t')[2])
 
-#     def __init__(self, filename=None):
-#         URL_BASE = 'https://www.omim.org/entry/'
-#         if filename:
-#             with open(filename, 'r') as f:
-#                 omim_ids = [re.findall(r'\((\d+)\)', line )  for line in f if line.startswith('chr') ]
-#                 self.start_urls = [ '{0}{1}'.format(URL_BASE, int(omim[0]) ) for omim in omim_ids if omim]
-#                 print self.start_urls
+    if (lastUpdatedYear == curYear and lastUpdatedMonth >= curMonth) or lastUpdatedYear > curYear:
+        scrapy.exceptions.CloseSpider(reason='updated list is the latest!')
 
-    # def start_requests(self):
-    #     for item in self.entries:
-    #         item_url = self.URL_BASE + item
-    #         yield scrapy.Request(url=item_url, callback = self.parse)
+    num_list = []
 
     def start_requests(self):
-        for page in self.entries:
-            page_url = self.URL_BASE + page
-            yield scrapy.Request(url=page_url, callback = self.parse)
+        for num in range(self.lastUpdatedMonth, curMonth+1):
+            updated_url = self.UPDATE_URL + str(curYear) + '/' + str(num)
+            yield scrapy.Request(url=updated_url, callback = self.parse_updated)
 
-    def parse(self, response):
+        # for page in self.entries:
+        #     main_url = self.MAIN_URL + page
+        #     yield scrapy.Request(url=main_url, callback = self.parse_item)
+
+    def parse_updated(self, response):
+
+        main_div = response.xpath('//*[@id="content"]/div[contains(@class, "hidden-print")]')
+        num_list = []
+
+        row_list = main_div.xpath('div')
+        for row in row_list:
+            numPath = row.xpath('div[1]/a')
+            typePath = numPath.xpath('..//span/strong/span/')
+            if typePath:
+                typeInfo = typePath.xpath('..//text()').extract().strip()
+                if typeInfo == '#':
+                    numinfo = numPath.xpath('..//@href').extract().strip()
+                    updateNum = numinfo.split('/')[2]
+                    num_list.append(updateNum)
+                    main_url = self.MAIN_URL + updateNum
+                    yield scrapy.Request(url=main_url, callback = self.parse_item)
+                    # yield Request(main_url, callback=self.parse_item,
+                    #         meta={'item': item, 'agent_urls' agent_urls})
+
+        # return num_list
+
+    def parse_item(self, response):
         clinical_synopsis = ['Inheritance', 'Growth', 'HeadAndNeck', 'Cardiovascular', 'Respiratory', 'Chest', 'Abdomen',
                             'Genitourinary', 'Skeletal', 'SkinNailsHair', 'MuscleSoftTissue', 'Neurologic', 'MetabolicFeatures',
                             'EndocrineFeatures', 'Hematology', 'Immunology', 'PrenatalManifestations', 'Neoplasia',
                             'LaboratoryAbnormalities', 'Miscellaneous', 'MolecularBasis']
         # omim_db = { "disease":[], "gene": [] }
         # omim_disease = {}
-        main_div = response.xpath('//*[@id="content"]/div[contains(@class, "hidden-print")]/div[2]/div[3]')
+        # gene_pheno = OmimItem()
         gene_pheno = {}
+        main_div = response.xpath('//*[@id="content"]/div[contains(@class, "hidden-print")]/div[2]/div[3]')
         gene_pheno['url'] = response.url
 
         # extract from omim id
@@ -91,28 +115,30 @@ class omimSpider(scrapy.Spider):
                 tr = main_div.xpath('.//table[contains(@class, "small")]/tbody/tr')
                 for tb_record in tr:
                         phenotype = {}
-                        if len(main_div.xpath('.//table[contains(@class, "small")]').xpath('.//td[@rowspan]')) > 0:
-                            phenotype['location'] = main_div.xpath('.//table[contains(@class, "small")]').xpath('.//td[@rowspan]').xpath('span/a/text()').extract_first().strip()
-                        else:
-                            phenotype['location'] = tb_record.xpath('td')[0].xpath('span/a/text()').extract_first().strip()
-                        if len(tb_record.xpath('.//td[@rowspan]')) > 0:
-                            index = 1
-                        else:
-                            index = 0
-                        phenotype['phenotype'] = tb_record.xpath('td')[index].xpath('span/text()').extract_first().strip()
-                        phenotype['pheno_mim'] = tb_record.xpath('td')[(index+1)].xpath('span/a/span[contains(@class, "mim-highlighted")]/text()').extract_first()
+                        # if len(main_div.xpath('.//table[contains(@class, "small")]').xpath('.//td[@rowspan]')) > 0:
+                        #     phenotype['location'] = main_div.xpath('.//table[contains(@class, "small")]').xpath('.//td[@rowspan]').xpath('span/a/text()').extract_first().strip()
+                        #     print (1, phenotype['location'])
+                        # else:
+                        phenotype['location'] = tb_record.xpath('td')[0].xpath('span/a/text()').extract_first().strip()
+                        print (2, phenotype['location'])
+                        # if len(tb_record.xpath('.//td[@rowspan]')) > 0:
+                        #     index = 1
+                        # else:
+                        #     index = 0
+                        phenotype['phenotype'] = tb_record.xpath('td')[1].xpath('span/text()').extract_first().strip()
+                        phenotype['pheno_mim'] = tb_record.xpath('td')[2].xpath('span/a/span[contains(@class, "mim-highlighted")]/text()').extract_first()
                         if phenotype['pheno_mim']:
                             phenotype['pheno_mim'] = phenotype['pheno_mim'].strip()
                         else:
-                            phenotype['pheno_mim'] = tb_record.xpath('td')[(index+1)].xpath('span/a/text()').extract_first().strip()
-                        phenotype['inherit'] = tb_record.xpath('td')[(index+2)].xpath('span/abbr/text()').extract_first()
+                            phenotype['pheno_mim'] = tb_record.xpath('td')[2].xpath('span/a/text()').extract_first().strip()
+                        phenotype['inherit'] = tb_record.xpath('td')[3].xpath('span/abbr/text()').extract_first()
                         if phenotype['inherit']:
                             phenotype['inherit'] = phenotype['inherit'].strip()
-                        phenotype['mapping_key'] = tb_record.xpath('td')[(index+3)].xpath('span/abbr/text()').extract_first().strip()
-                        if len(tb_record.xpath('td')) > (index+4):
-                            phenotype['gene_related'] = tb_record.xpath('td')[(index+4)].xpath('span/text()').extract_first().strip()
-                        if len(tb_record.xpath('td')) > (index+5):
-                            phenotype['gene_mim'] = tb_record.xpath('td')[(index+5)].xpath('span/a/text()').extract_first().strip()
+                        phenotype['mapping_key'] = tb_record.xpath('td')[4].xpath('span/abbr/text()').extract_first().strip()
+                        if len(tb_record.xpath('td')) > 5:
+                            phenotype['gene_related'] = tb_record.xpath('td')[5].xpath('span/text()').extract_first().strip()
+                        if len(tb_record.xpath('td')) > 6:
+                            phenotype['gene_mim'] = tb_record.xpath('td')[6].xpath('span/a/text()').extract_first().strip()
                         gene_pheno['relations'].append(phenotype)
 
             # extract from clinical synopsis
@@ -180,3 +206,8 @@ class omimSpider(scrapy.Spider):
             # if main_div.xpath('.//*[@id="phenotypicSeriesFold"]'):
 
             return gene_pheno
+
+f = open("updated.log", "a")
+logText = "updated\t" + str(curYear) + '\t' + str(curMonth)
+f.write(logText)
+f.close()
